@@ -26,10 +26,14 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
                 try{
                 const head = element.getElementsByTagName('a')[0];
                 let link = head.href
+
+                let intro_el   = head.getElementsByTagName('P');
+
+                let intro = intro_el[0].textContent;
                 
                 
 
-                data.push({element:element.innerText, link:link});
+                data.push({intro:intro, link:link});
                 }
                 catch{
                     data.push({element:element.innerText,success: "No"})
