@@ -9,6 +9,7 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
 
     .schedule('*/15 * * * *').onRun(async context => {
         const url = 'https://www.stuff.co.nz/';
+    
         
         const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
         const page = await browser.newPage();
@@ -19,13 +20,24 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
     
         let texts = await page.evaluate(() => {
             let data = [];
-            let elements = document.getElementsByClassName('content');
-            for (var element of elements)
-                data.push(element.textContent);
-            
+            let elements = document.getElementsByTagName('article');
+            for (var element of elements){
+                //try get link
+                try{
+                const head = element.getElementsByTagName('a')[0];
+                let link = head.href
+                
+                
+
+                data.push({element:element.innerText, link:link});
+                }
+                catch{
+                    data.push({element:element.innerText,success: "No"})
+                }
+            }
             return data;
         });
-        db.collection('logs').add({ hello: texts })
+        db.collection('logs').add({ content: texts })
 
         await browser.close();
 
