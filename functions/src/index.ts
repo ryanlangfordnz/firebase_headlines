@@ -22,22 +22,52 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
             let data = [];
             let elements = document.getElementsByTagName('article');
             for (var element of elements){
+                let temp_dict:any = {};
                 //try get link
-                try{
                 const head = element.getElementsByTagName('a')[0];
-                let link = head.href
-
-                let intro_el   = head.getElementsByTagName('P');
-
-                let intro = intro_el[0].textContent;
+                try{
                 
-                
-
-                data.push({intro:intro, link:link});
+                let link = head.href != null ? head.href : "No Link";
+                temp_dict["Link"] = link;
                 }
                 catch{
-                    data.push({element:element.innerText,success: "No"})
+                    
+                    temp_dict["Link"] = "Link";
                 }
+
+                try{
+                let intro_el   = head.getElementsByTagName('P');
+
+                let intro = intro_el[0].textContent != null ? intro_el[0].textContent : "No intro";
+
+                temp_dict["Intro"] = intro;
+                }
+                catch{
+                    
+                    temp_dict["Intro"] = "No Intro";
+                }
+
+
+                try{
+                    let headline_el = head.getElementsByTagName('h3')
+                    
+                    let headline = headline_el[0] != null  ?  head.getElementsByTagName('h3')[0].textContent : "None";
+
+                    temp_dict["Headline"] = headline
+                }
+
+                catch{
+                    temp_dict["Headline"] = "No Headline"
+                }
+
+
+
+
+                data.push(temp_dict);
+
+               
+                
+             
             }
             return data;
         });
