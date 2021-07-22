@@ -25,6 +25,9 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
                 let temp_dict:any = {};
                 //try get link
                 const head = element.getElementsByTagName('a')[0];
+                
+                // try catch blocks are w workaround for the firestore side of things
+                
                 try{
                 
                 let link = head.href != null ? head.href : "No Link";
@@ -71,7 +74,7 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
             }
             return data;
         });
-        db.collection('logs').add({ content: texts })
+        db.collection('logs').add({ content: texts, timestamp:  admin.firestore.Timestamp.now()})
 
         await browser.close();
 
