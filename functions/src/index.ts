@@ -74,8 +74,9 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
             }
             return data;
         });
-        db.collection('articles').add({ content: texts, timestamp:  admin.firestore.Timestamp.now()})
-
+        for (var text of texts){
+        db.collection('articles').add({ article: text, timestamp:  admin.firestore.Timestamp.now()})
+        }
         await browser.close();
 
        
