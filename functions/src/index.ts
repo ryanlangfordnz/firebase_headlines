@@ -77,7 +77,7 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
         for (var text of texts){
 
         try{
-            db.collection('articles').add({"Headline": text["Headline"],"Intro": text["Intro"],"Link": text["Link"],"wordList":text["Headline"].split(" ") ,timestamp:  admin.firestore.Timestamp.now()})
+            db.collection('articles').add({"Headline": text["Headline"],"Intro": text["Intro"],"Link": text["Link"],"wordList":text["Headline"].split(" ").map((v: string) => v.toLowerCase()) ,timestamp:  admin.firestore.Timestamp.now()})
         }
             catch{
 
