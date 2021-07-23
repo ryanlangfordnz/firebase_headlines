@@ -35,7 +35,7 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
                 }
                 catch{
                     
-                    //temp_dict["Link"] = "Link";
+                    temp_dict["Link"] = null;
                 }
 
                 try{
@@ -47,7 +47,7 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
                 }
                 catch{
                     
-                   // temp_dict["Intro"] = "No Intro";
+                    temp_dict["Intro"] = null;
                 }
 
 
@@ -60,7 +60,7 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
                 }
 
                 catch{
-                   // temp_dict["Headline"] = "No Headline"
+                    temp_dict["Headline"] = null
                 }
 
 
@@ -75,7 +75,7 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
             return data;
         });
         for (var text of texts){
-        db.collection('articles').add({ article: text, timestamp:  admin.firestore.Timestamp.now()})
+        db.collection('articles').add({"Headline": text["Headline"],"Intro": text["Intro"],"Link": text["Link"],timestamp:  admin.firestore.Timestamp.now()})
         }
         await browser.close();
 
