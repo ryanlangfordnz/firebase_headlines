@@ -35,7 +35,7 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
                 }
                 catch{
                     
-                    temp_dict["Link"] = "Link";
+                    //temp_dict["Link"] = "Link";
                 }
 
                 try{
@@ -47,20 +47,20 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
                 }
                 catch{
                     
-                    temp_dict["Intro"] = "No Intro";
+                   // temp_dict["Intro"] = "No Intro";
                 }
 
 
                 try{
                     let headline_el = head.getElementsByTagName('h3')
                     
-                    let headline = headline_el[0] != null  ?  head.getElementsByTagName('h3')[0].textContent : "None";
+                    let headline = headline_el[0].textContent != null  ?  head.getElementsByTagName('h3')[0].textContent : "None";
 
                     temp_dict["Headline"] = headline
                 }
 
                 catch{
-                    temp_dict["Headline"] = "No Headline"
+                   // temp_dict["Headline"] = "No Headline"
                 }
 
 
