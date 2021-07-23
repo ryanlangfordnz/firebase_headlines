@@ -7,7 +7,7 @@ const db = admin.firestore();
 
 export const scraper = functions.runWith( { memory: '2GB' }).region("australia-southeast1").pubsub
 
-    .schedule('*/15 * * * *').onRun(async context => {
+    .schedule('0 */1 * * *').onRun(async context => {
         const url = 'https://www.stuff.co.nz/';
     
         
@@ -74,7 +74,7 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
             }
             return data;
         });
-        db.collection('logs').add({ content: texts, timestamp:  admin.firestore.Timestamp.now()})
+        db.collection('articles').add({ content: texts, timestamp:  admin.firestore.Timestamp.now()})
 
         await browser.close();
 
