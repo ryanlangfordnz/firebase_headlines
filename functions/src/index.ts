@@ -75,8 +75,14 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
             return data;
         });
         for (var text of texts){
-        db.collection('articles').add({"Headline": text["Headline"],"Intro": text["Intro"],"Link": text["Link"],timestamp:  admin.firestore.Timestamp.now()})
+
+        try{
+            db.collection('articles').add({"Headline": text["Headline"],"Intro": text["Intro"],"Link": text["Link"],"wordList":text["Headline"].split(" ") ,timestamp:  admin.firestore.Timestamp.now()})
         }
+            catch{
+
+        //db.collection('articles').add({"Headline": text["Headline"],"Intro": text["Intro"],"Link": text["Link"],timestamp:  admin.firestore.Timestamp.now()})
+        }}
         await browser.close();
 
        
