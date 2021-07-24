@@ -5,62 +5,62 @@ import * as puppeteer from 'puppeteer';
 admin.initializeApp(); // needed to initialize the admin sdk
 const db = admin.firestore();
 
-export const scraper = functions.runWith( { memory: '2GB' }).region("australia-southeast1").pubsub
+export const scraper = functions.runWith({ memory: '2GB' }).region("australia-southeast1").pubsub
 
     .schedule('0 */1 * * *').onRun(async context => {
         const url = 'https://www.stuff.co.nz/';
-    
-        
+
+
         const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
         const page = await browser.newPage();
         await page.goto(url);
-      
 
-    
-    
+
+
+
         let texts = await page.evaluate(() => {
             let data = [];
             let elements = document.getElementsByTagName('article');
-            for (var element of elements){
-                let temp_dict:any = {};
+            for (var element of elements) {
+                let temp_dict: any = {};
                 //try get link
                 const head = element.getElementsByTagName('a')[0];
-                
+
                 // try catch blocks are w workaround for the firestore side of things
-                
-                try{
-                
-                let link = head.href != null ? head.href : "No Link";
-                temp_dict["Link"] = link;
+
+                try {
+
+                    let link = head.href != null ? head.href : "No Link";
+                    temp_dict["Link"] = link;
                 }
-                catch{
-                    
+                catch {
+
                     temp_dict["Link"] = null;
                 }
 
-                try{
-                let intro_el   = head.getElementsByTagName('P');
+                try {
+                    let intro_el = head.getElementsByTagName('P');
                     //I think the ternarys are redundant butI dont want to change anything
-                let intro = intro_el[0].textContent != null ? intro_el[0].textContent : "No intro";
+                    let intro = intro_el[0].textContent != null ? intro_el[0].textContent : "No intro";
 
-                temp_dict["Intro"] = intro;
+                    temp_dict["Intro"] = intro;
                 }
-                catch{
-                    
+                catch {
+
                     temp_dict["Intro"] = null;
                 }
 
 
-                try{
+                try {
                     let headline_el = head.getElementsByTagName('h3')
-                                        //I think the ternarys are redundant butI dont want to change anything
+                    //I think the ternarys are redundant butI dont want to change anything
 
-                    let headline = headline_el[0].textContent != null  ?  head.getElementsByTagName('h3')[0].textContent : "None";
+                    let headline = headline_el[0].textContent != null ? head.getElementsByTagName('h3')[0].textContent : "None";
 
                     temp_dict["Headline"] = headline
                 }
 
-                catch{
+                catch {
                     temp_dict["Headline"] = null
                 }
 
@@ -69,24 +69,25 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
 
                 data.push(temp_dict);
 
-               
-                
-             
+
+
+
             }
             return data;
         });
-        for (var text of texts){
+        for (var text of texts) {
 
-        try{
-            db.collection('articles').add({"Headline": text["Headline"],"Intro": text["Intro"],"Link": text["Link"],"wordList":text["Headline"].split(" ").map((v: string) => v.toLowerCase()) ,timestamp:  admin.firestore.Timestamp.now()})
+            try {
+                db.collection('articles').add({ "Headline": text["Headline"], "Intro": text["Intro"], "Link": text["Link"], "wordList": text["Headline"].split(" ").map((v: string) => v.toLowerCase()), timestamp: admin.firestore.Timestamp.now() })
+            }
+            catch {
+
+                //db.collection('articles').add({"Headline": text["Headline"],"Intro": text["Intro"],"Link": text["Link"],timestamp:  admin.firestore.Timestamp.now()})
+            }
         }
-            catch{
-
-        //db.collection('articles').add({"Headline": text["Headline"],"Intro": text["Intro"],"Link": text["Link"],timestamp:  admin.firestore.Timestamp.now()})
-        }}
         await browser.close();
 
-       
+
 
     });
 
