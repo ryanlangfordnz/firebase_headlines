@@ -40,7 +40,7 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
 
                 try{
                 let intro_el   = head.getElementsByTagName('P');
-
+                    //I think the ternarys are redundant butI dont want to change anything
                 let intro = intro_el[0].textContent != null ? intro_el[0].textContent : "No intro";
 
                 temp_dict["Intro"] = intro;
@@ -53,7 +53,8 @@ export const scraper = functions.runWith( { memory: '2GB' }).region("australia-s
 
                 try{
                     let headline_el = head.getElementsByTagName('h3')
-                    
+                                        //I think the ternarys are redundant butI dont want to change anything
+
                     let headline = headline_el[0].textContent != null  ?  head.getElementsByTagName('h3')[0].textContent : "None";
 
                     temp_dict["Headline"] = headline
